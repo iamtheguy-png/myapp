@@ -1,0 +1,16 @@
+# Expense Receipt Manager — Flask app
+# Python 3.10+
+
+Flask>=3.0,<4
+Flask-SQLAlchemy>=3.1,<4
+Flask-WTF>=1.2,<2
+Werkzeug>=3.0,<4
+
+# Production server (for LXC deployment)
+gunicorn>=21,<23
+
+# Phase 3 — OCR
+pytesseract>=0.3.10
+pdf2image>=1.16
+Pillow>=10
+pymupdf>=1.23
