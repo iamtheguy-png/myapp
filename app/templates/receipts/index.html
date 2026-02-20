@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Receipts — Expense Receipts{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <h1>Receipts</h1>
+  <span class="page-head-actions">
+    <a href="{{ url_for('export.receipts_csv') }}" class="btn btn-secondary">Export CSV</a>
+    <a href="{{ url_for('receipts.upload') }}" class="btn btn-primary">Upload receipt</a>
+  </span>
+</section>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul class="flash-list">
+      {% for category, message in messages %}
+        <li class="flash flash-{{ category }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+{% if receipts %}
+  <ul class="receipt-list">
+    {% for r in receipts %}
+      <li class="receipt-card">
+        <a href="{{ url_for('receipts.detail', receipt_id=r.id) }}" class="receipt-card-link">
+          <span class="receipt-icon" aria-hidden="true">
+            {% if r.file_path.lower().endswith('.pdf') %}📄{% else %}🖼️{% endif %}
+          </span>
+          <div class="receipt-meta">
+            <span class="receipt-filename">{{ r.original_filename }}</span>
+            <span class="receipt-date">{{ (r.receipt_date or r.created_at).strftime('%Y-%m-%d') }}</span>
+            {% if r.merchant %}<span class="receipt-merchant">{{ r.merchant }}</span>{% endif %}
+            {% if r.tags %}
+              <span class="tag-list">
+                {% for t in r.tags %}<span class="tag tag-sm">{{ t.name }}</span>{% endfor %}
+              </span>
+            {% endif %}
+          </div>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p class="empty-state">No receipts yet. <a href="{{ url_for('receipts.upload') }}">Upload one</a>.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}{{ receipt.original_filename }} — Expense Receipts{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <h1>Receipt</h1>
+  <a href="{{ url_for('receipts.index') }}" class="btn btn-secondary">Back to list</a>
+</section>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul class="flash-list">
+      {% for category, message in messages %}
+        <li class="flash flash-{{ category }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+<div class="receipt-detail-layout">
+  <div class="receipt-preview">
+    <a href="{{ url_for('receipts.serve_file', receipt_id=receipt.id) }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">View / download file</a>
+    <p class="text-muted">{{ receipt.original_filename }} · {{ (receipt.receipt_date or receipt.created_at).strftime('%Y-%m-%d') }}{% if receipt.merchant %} · {{ receipt.merchant }}{% endif %}</p>
+  </div>
+
+  <div class="receipt-tags-panel">
+    <h2>Tags</h2>
+    {% if receipt.tags %}
+      <ul class="tag-list-inline">
+        {% for t in receipt.tags %}
+          <li>
+            <span class="tag">{{ t.name }}</span>
+            <form method="post" action="{{ url_for('receipts.assign_tag', receipt_id=receipt.id) }}" class="form-inline">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <input type="hidden" name="tag_id" value="{{ t.id }}">
+              <input type="hidden" name="action" value="remove">
+              <button type="submit" class="btn btn-sm btn-ghost" aria-label="Remove tag {{ t.name }}">Remove</button>
+            </form>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-muted">No tags yet.</p>
+    {% endif %}
+
+    <h3>Add tag</h3>
+    <form method="post" action="{{ url_for('receipts.assign_tag', receipt_id=receipt.id) }}" class="form-inline">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="action" value="add">
+      <label for="tag_id" class="sr-only">Tag</label>
+      <select id="tag_id" name="tag_id" required>
+        <option value="">Choose a tag…</option>
+        {% for t in all_tags %}
+          {% if t not in receipt.tags %}
+            <option value="{{ t.id }}">{{ t.name }}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn btn-primary">Add</button>
+    </form>
+    {% if not all_tags or receipt.tags|length == all_tags|length %}
+      <p class="text-muted"><a href="{{ url_for('tags.index') }}">Create a tag</a> first.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

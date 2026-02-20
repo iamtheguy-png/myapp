@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Tags — Expense Receipts{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <h1>Tags</h1>
+</section>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul class="flash-list">
+      {% for category, message in messages %}
+        <li class="flash flash-{{ category }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+<form method="post" action="{{ url_for('tags.create') }}" class="form form-inline card">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label for="name">New tag</label>
+  <input type="text" id="name" name="name" maxlength="64" placeholder="e.g. Travel" required>
+  <button type="submit" class="btn btn-primary">Create</button>
+</form>
+
+{% if tags %}
+  <ul class="tag-list-page">
+    {% for t in tags %}
+      <li class="tag-row">
+        <span class="tag">{{ t.name }}</span>
+        <span class="tag-meta">{{ t.receipts.count() }} receipt(s)</span>
+        <a href="{{ url_for('tags.edit', tag_id=t.id) }}" class="btn btn-sm btn-secondary">Rename</a>
+        <form method="post" action="{{ url_for('tags.delete', tag_id=t.id) }}" class="form-inline" onsubmit="return confirm('Delete this tag from all receipts?');">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn btn-sm btn-ghost">Delete</button>
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p class="empty-state">No tags yet. Create one above.</p>
+{% endif %}
+{% endblock %}

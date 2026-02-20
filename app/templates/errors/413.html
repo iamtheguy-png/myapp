@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}File too large — Expense Receipts{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <h1>File too large</h1>
+</section>
+<p class="text-muted">The file exceeds the maximum size (20 MB). Please choose a smaller file.</p>
+<p><a href="{{ url_for('receipts.upload') }}" class="btn btn-primary">Back to upload</a></p>
+{% endblock %}

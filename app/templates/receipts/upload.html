@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Upload receipt — Expense Receipts{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <h1>Upload receipt</h1>
+  <a href="{{ url_for('receipts.index') }}" class="btn btn-secondary">Back to list</a>
+</section>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul class="flash-list">
+      {% for category, message in messages %}
+        <li class="flash flash-{{ category }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+<form method="post" enctype="multipart/form-data" class="form form-upload">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="form-group">
+    <label for="file">File (PDF, JPG, PNG, max 20 MB)</label>
+    <input type="file" id="file" name="file" accept=".pdf,.jpg,.jpeg,.png" required>
+  </div>
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">Upload</button>
+    <a href="{{ url_for('receipts.index') }}" class="btn btn-secondary">Cancel</a>
+  </div>
+</form>
+{% endblock %}

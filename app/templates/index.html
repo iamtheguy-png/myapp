@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Home — Expense Receipts{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <h1>Expense Receipt Manager</h1>
+  <p class="lead">Upload receipts, tag them, and search by date or merchant. Export and report when you need to.</p>
+</section>
+
+<section class="cards">
+  <div class="card">
+    <h2><a href="{{ url_for('receipts.index') }}">Receipts</a></h2>
+    <p>Upload PDF or images and assign custom tags.</p>
+  </div>
+  <div class="card">
+    <h2><a href="{{ url_for('tags.index') }}">Tags</a></h2>
+    <p>Create and manage your custom tags.</p>
+  </div>
+  <div class="card">
+    <h2><a href="{{ url_for('search.index') }}">Search</a></h2>
+    <p>Find by tags, date range, or merchant.</p>
+  </div>
+  <div class="card">
+    <h2><a href="{{ url_for('reports.index') }}">Reports</a></h2>
+    <p>By month or by tag; view in browser or download CSV.</p>
+  </div>
+  <div class="card">
+    <h2><a href="{{ url_for('receipts.index') }}">Export</a></h2>
+    <p>Export receipts as CSV (all or from search).</p>
+  </div>
+</section>
+{% endblock %}
