@@ -1,0 +1,26 @@
+# Systemd unit for Expense Receipt Manager (Gunicorn)
+# Copy to /etc/systemd/system/ then:
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable expense-receipts
+#   sudo systemctl start expense-receipts
+#
+# Set APP_ROOT to your app directory (e.g. /var/lib/expense-receipts-app or /home/user/expense-receipts-app).
+
+[Unit]
+Description=Expense Receipt Manager (Gunicorn)
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/lib/expense-receipts-app
+Environment="PATH=/var/lib/expense-receipts-app/.venv/bin"
+Environment="FLASK_ENV=production"
+EnvironmentFile=-/etc/expense-receipts/env
+ExecStart=/var/lib/expense-receipts-app/.venv/bin/gunicorn -w 1 -b 127.0.0.1:8000 --timeout 120 wsgi:app
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
